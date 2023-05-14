@@ -1,0 +1,61 @@
+databaseChangeLog:
+  - changeSet:
+      author: sandro
+      id: 1-init-create-table-users
+      preConditions:
+        - not:
+            - tableExists:
+                tableName: users
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(128)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      author: sandro
+      id: 1-init-create-table-messages
+      preConditions:
+        - and:
+            - tableExists:
+                tableName: users
+            - not:
+                - tableExists:
+                    tableName: messages
+      changes:
+        - createTable:
+            tableName: messages
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: text
+                  type: varchar
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    references: users(id)
+                    foreignKeyName: messages_user_id_users_id_fk
+              - column:
+                  name: deleted
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
